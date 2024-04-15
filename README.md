@@ -1,10 +1,8 @@
 # Power-Metrics-Menu-Bar-macOS
-Basic Menu Bar Display for powermetrics command on macOS
+Basic Menu Bar Display for temperature on macOS
 
 
-
-<img width="246" alt="example" src="https://github.com/ambeckley/Power-Metrics-Menu-Bar-macOS/assets/45105699/37e7a086-b03a-4996-a163-731da1c32f61">
-
+<img width="302" alt="image" src="https://github.com/ambeckley/Power-Metrics-Menu-Bar-macOS/assets/45105699/c5bf01d0-252c-4302-a515-e428be351f2a">
 
 
 Works with Intel based macs
