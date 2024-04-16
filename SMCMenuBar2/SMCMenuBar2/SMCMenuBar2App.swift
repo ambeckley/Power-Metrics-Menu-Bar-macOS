@@ -78,9 +78,12 @@ func MHZCPU() -> String {
 
 
 struct TempData: Identifiable {
+    
+    
     var time = String()
-    var temp = String()
+    var temp = Double()
     var id: String { time }
+    
 }
 
 
@@ -100,6 +103,8 @@ struct TheMainView: View {
     @State var count = 0
     
     @State var enableGraph = true
+    @State var CPUminmax = [Double()]
+    @State var GPUminmax = [Double()]
     
     
     var body: some View {
@@ -119,19 +124,36 @@ struct TheMainView: View {
             Text("CPU: \(tempCPU) C")
             Text("GPU: \(tempGPU) C")
             if enableGraph {
-                Chart {
-                    ForEach(cpuData) { data in
-                        LineMark(x: .value("Time", data.time),
-                                 y: .value("CPU Temp", data.temp))
-                    }
+                if CPUminmax.max() != CPUminmax.min() {
+                    Chart {
+                        ForEach(cpuData) { data in
+                            LineMark(x: .value("Time", data.time),
+                                     y: .value("CPU Temp", data.temp))
+                        }
+                    }.chartYScale(domain: [CPUminmax.min() ?? 40, CPUminmax.max() ?? 99])
+                } else {
+                    Chart {
+                        ForEach(cpuData) { data in
+                            LineMark(x: .value("Time", data.time),
+                                     y: .value("CPU Temp", data.temp))
+                        }
+                    }.chartYScale(domain: [40, 99])
                 }
-                
-                
-                Chart {
-                    ForEach(gpuData) { data in
-                        LineMark(x: .value("Time", data.time),
-                                 y: .value("GPU Temp", data.temp))
-                    }
+                if GPUminmax.max() != GPUminmax.min() {
+                    
+                    Chart {
+                        ForEach(gpuData) { data in
+                            LineMark(x: .value("Time", data.time),
+                                     y: .value("GPU Temp", data.temp))
+                        }
+                    }.chartYScale(domain: [GPUminmax.min() ?? 40, GPUminmax.max() ?? 99])
+                } else {
+                    Chart {
+                        ForEach(gpuData) { data in
+                            LineMark(x: .value("Time", data.time),
+                                     y: .value("GPU Temp", data.temp))
+                        }
+                    }.chartYScale(domain: [40, 99])
                 }
             }
             
@@ -141,21 +163,26 @@ struct TheMainView: View {
         }.onReceive(timer, perform: { _ in
             tempCPU = TemperatureCPU()
             tempGPU = TemperatureGPU()
-            let date = Date()
-            let dateFormatter = DateFormatter()
-            //dateFormatter.dateStyle = .short
-            dateFormatter.timeStyle = .long
+            
             
             //cpuData.append(TempData(time: String(currentDateTime), temp: tempCPU))
             if enableGraph {
-                cpuData.append(TempData(time: String(dateFormatter.string(from: date).dropLast(7)), temp: tempCPU))
-                gpuData.append(TempData(time: String(dateFormatter.string(from: date).dropLast(7)), temp: tempGPU))
-                
-                
-                
+                let date = Date()
+                let dateFormatter = DateFormatter()
+                //dateFormatter.dateStyle = .short
+                dateFormatter.timeStyle = .long
+                 
+                cpuData.append(TempData(time: String(dateFormatter.string(from: date).dropLast(7)), temp: Double(tempCPU) ?? 40.0))
+                gpuData.append(TempData(time: String(dateFormatter.string(from: date).dropLast(7)), temp: Double(tempGPU) ?? 40.0))
+                CPUminmax.append(Double(tempCPU) ?? 40.0)
+                GPUminmax.append(Double(tempGPU) ?? 40.0)
+                //print(CPUminmax)
+                //print(GPUminmax)
                 if count > 4 {
                     cpuData = Array(cpuData.dropFirst(1))
                     gpuData = Array(gpuData.dropFirst(1))
+                    CPUminmax = Array(CPUminmax.dropFirst(1))
+                    GPUminmax = Array(GPUminmax.dropFirst(1))
                 } else {
                     count+=1
                 }
