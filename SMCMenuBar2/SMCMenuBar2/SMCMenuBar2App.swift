@@ -124,37 +124,22 @@ struct TheMainView: View {
             Text("CPU: \(tempCPU) C")
             Text("GPU: \(tempGPU) C")
             if enableGraph {
-                if CPUminmax.max() != CPUminmax.min() {
+          
                     Chart {
                         ForEach(cpuData) { data in
                             LineMark(x: .value("Time", data.time),
                                      y: .value("CPU Temp", data.temp))
                         }
-                    }.chartYScale(domain: [CPUminmax.min() ?? 40, CPUminmax.max() ?? 99])
-                } else {
-                    Chart {
-                        ForEach(cpuData) { data in
-                            LineMark(x: .value("Time", data.time),
-                                     y: .value("CPU Temp", data.temp))
-                        }
-                    }.chartYScale(domain: [40, 99])
-                }
-                if GPUminmax.max() != GPUminmax.min() {
+                    }.chartYScale(domain: [(CPUminmax.min() ?? 40)-1, (CPUminmax.max() ?? 99)+1])
+                
                     
                     Chart {
                         ForEach(gpuData) { data in
                             LineMark(x: .value("Time", data.time),
                                      y: .value("GPU Temp", data.temp))
                         }
-                    }.chartYScale(domain: [GPUminmax.min() ?? 40, GPUminmax.max() ?? 99])
-                } else {
-                    Chart {
-                        ForEach(gpuData) { data in
-                            LineMark(x: .value("Time", data.time),
-                                     y: .value("GPU Temp", data.temp))
-                        }
-                    }.chartYScale(domain: [40, 99])
-                }
+                    }.chartYScale(domain: [(GPUminmax.min() ?? 40)-1, (GPUminmax.max() ?? 99)+1])
+               
             }
             
             
